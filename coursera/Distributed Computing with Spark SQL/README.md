@@ -1,5 +1,5 @@
 # Distributed-Computing-with-Spark-SQL
-This repository shares my notes on MooC "Distributed Computing with Spark SQL" offered by University of California, Davis + Databricks. It is brief overview of Apache Spark sql concepts.
+This folder shares my notes on MooC "Distributed Computing with Spark SQL" offered by University of California, Davis + Databricks. It is brief overview of Apache Spark sql concepts.
 
 ## Refer [Notes.pdf](https://github.com/RasikKane/DA_ML_courses/blob/master/coursera/Distributed%20Computing%20with%20Spark%20SQL/Notes.pdf) in repository to know more about concepts covered in this course
 
