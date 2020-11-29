@@ -1,64 +1,57 @@
---all the questions in this practice set, you will be using the Salary by Job Range Table.
---This is a single table titled: salary_range_by_job_classification. This table contains the following columns:
---SetIDJob_Code
---Eff_Date
---Sal_End_Date
---Salary_setID
---Sal_Plan
---Grade
---Step
---Biweekly_High_Rate
---Biweekly_Low_Rate
---Union_Code
---Extended_Step
---Pay_Type
+--all the questions in this practice set are based on Chinook data base. Schema are
+--Artists
+--Playlists
+--Employees
+--Albums
+--Tracks
+--Invoices
+--Customers
 
--- Find the distinct values for the extended step.
-SELECT DISTINCT Extended_step
-FROM salary_range_by_job_classification
+-- Find all the tracks that have a length of 5,000,000 milliseconds or more.
+SELECT TrackId
+FROM Tracks
+WHERE Milliseconds >= 5000000
 
--- Excluding $0.00, what is the minimum bi-weekly high rate of pay
-SELECT
-MIN(Biweekly_high_Rate)
-FROM salary_range_by_job_classification
-WHERE Biweekly_high_Rate <> "$0.00"
+--Find all the invoices whose total is between $5 and $15 dollars.
+SELECT InvoiceId
+FROM Invoices
+WHERE Total  BETWEEN  5 AND 15
 
---What is the maximum biweekly high rate of pay
-SELECT
-MAX(Biweekly_high_Rate)
-FROM salary_range_by_job_classification
+--Find all the customers from the following States: RJ, DF, AB, BC, CA, WA, NY.
+SELECT *
+FROM Customers
+WHERE State in ("RJ", "DF", "AB", "BC", "CA", "WA", "NY")
 
---What is the pay type for all the job codes that start with '03'?
-SELECT Job_Code, Pay_Type
-FROM salary_range_by_job_classification
-WHERE Job_Code LIKE "03%"
+-- Find all the invoices for customer 56 and 58 where the total was between $1.00 and $5.00.
+SELECT *
+FROM Invoices
+WHERE CustomerId in (56, 58) AND Total BETWEEN 1 AND 5
 
---Run a query to find the Effective Date (eff_date) or Salary End Date (sal_end_date) for grade Q90H0?
-SELECT eff_date, sal_end_date
-FROM salary_range_by_job_classification
-WHERE grade = "Q90H0"
+--Find all the tracks whose name starts with 'All'.
+SELECT TrackId
+FROM Tracks
+WHERE Name LIKE "All%"
 
---Sort the Biweekly low rate in ascending order.
-SELECT Biweekly_Low_Rate
-FROM salary_range_by_job_classification
-ORDER BY Biweekly_Low_Rate ASC
+--Find all the customer emails that start with "J" and are from gmail.com.
+SELECT Email
+FROM Customers
+WHERE Email LIKE "J%gmail.com"
 
---What Step are Job Codes 0110-0400?
-SELECT DISTINCT Step
-FROM salary_range_by_job_classification
-WHERE Job_Code BETWEEN  "0110" AND "0400"
+--Find all invoices from the billing city Brasília, Edmonton, and Vancouver and sort in descending order by invoice ID.
+SELECT *
+FROM Invoices
+WHERE BillingCity in ("Brasília", "Edmonton", "Vancouver")
+ORDER BY InvoiceId DESC
 
---What is the Biweekly High Rate minus the Biweekly Low Rate for job Code 0170?
-SELECT (Biweekly_High_Rate - Biweekly_Low_Rate)
-FROM salary_range_by_job_classification
-WHERE Job_Code = "0170"
+--Show the number of orders placed by each customer
+--(hint: this is found in the invoices table) and sort the result by the number of orders in descending order)
+SELECT CustomerId, COUNT(DISTINCT InvoiceId) AS number_orders
+FROM Invoices
+GROUP BY CustomerId
+ORDER BY number_orders DESC
 
--- What is the Extended Step for Pay Types M, H, and D
-SELECT DISTINCT Extended_Step
-FROM salary_range_by_job_classification
-WHERE Pay_Type in ("M","D","H")
-
---What is the step for Union Code 990 and a Set ID of SFMTA or COMMN?
-SELECT DISTINCT Step
-FROM salary_range_by_job_classification
-WHERE Union_Code = "990" AND SetID IN ("SFMTA", "COMMN")
+--Find the albums with 12 or more tracks.
+SELECT AlbumId, COUNT(DISTINCT TrackId) AS number_tracks
+FROM Tracks
+GROUP BY AlbumId
+HAVING number_tracks >= 12
