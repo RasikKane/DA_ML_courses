@@ -1,0 +1,553 @@
+By: Rasik Kane
+Date: 29 Jan 2020
+
+Data Scientist Role Play: Profiling and Analyzing the Yelp Dataset Coursera Worksheet
+
+This is a 2-part assignment. In the first part, you are asked a series of questions that 
+will help you profile and understand the data just like a data scientist would. For this 
+first part of the assignment, you will be assessed both on the correctness of your 
+findings, as well as the code you used to arrive at your answer. You will be graded on 
+how easy your code is to read, so remember to use proper formatting and comments where 
+necessary.
+
+In the second part of the assignment, you are asked to come up with your own inferences 
+and analysis of the data for a particular research question you want to answer. You will be 
+required to prepare the dataset for the analysis you choose to do. As with the first part, 
+you will be graded, in part, on how easy your code is to read, so use proper formatting 
+and comments to illustrate and communicate your intent as required.
+
+For both parts of this assignment, use this "worksheet." It provides all the questions 
+you are being asked, and your job will be to transfer your answers and SQL coding where
+indicated into this worksheet so that your peers can review your work. You should be able 
+to use any Text Editor (Windows Notepad, Apple TextEdit, Notepad ++, Sublime Text, etc.) 
+to copy and paste your answers. If you are going to use Word or some other page layout
+application, just be careful to make sure your answers and code are lined appropriately.
+In this case, you may want to save as a PDF to ensure your formatting remains intact
+for you reviewer.
+
+
+
+Part 1: Yelp Dataset Profiling and Understanding
+
+1. Profile the data by finding the total number of records for each of the tables below:
+	
+		SELECT COUNT(*)
+		FROM table
+	
+	i. 		Attribute table = 10000
+	ii. 	Business table = 10000
+	iii. 	Category table = 10000
+	iv. 	Checkin table = 10000
+	v. 		elite_years table = 10000 
+	vi. 	friend table = 10000
+	vii. 	hours table = 10000
+	viii. 	photo table = 10000
+	ix. 	review table = 10000
+	x. 		tip table = 10000
+	xi. 	user table = 10000
+	
+
+
+2. Find the total number of distinct records for each of the keys listed below:
+
+		SELECT COUNT(DISTINCT(key))
+		FROM table
+
+	i. 		Business = id: 10000
+	ii. 	Hours = business_id: 1562
+	iii. 	Category = business_id: 2643
+	iv. 	Attribute = business_id: 1115
+	v. 		Review = id:10000, business_id: 8090, user_id: 9581
+	vi. 	Checkin = business_id: 493
+	vii. 	Photo = id: 10000, business_id: 6493
+	viii. 	Tip = user_id: 537, business_id: 3979
+	ix. 	User = id: 10000
+	x. 		Friend = user_id: 11
+	xi. 	Elite_years = user_id: 2780
+	
+
+
+3. Are there any columns with null values in the Users table? Indicate "yes," or "no."
+
+	Answer: "no"
+	
+	
+	SQL code used to arrive at answer:
+	
+		SELECT COUNT(*)
+		FROM user
+		WHERE id IS NULL OR 
+		  name IS NULL OR 
+		  review_count IS NULL OR 
+		  yelping_since IS NULL OR
+		  useful IS NULL OR 
+		  funny IS NULL OR 
+		  cool IS NULL OR 
+		  fans IS NULL OR 
+		  average_stars IS NULL OR 
+		  compliment_hot IS NULL OR 
+		  compliment_more IS NULL OR 
+		  compliment_profile IS NULL OR 
+		  compliment_cute IS NULL OR 
+		  compliment_list IS NULL OR 
+		  compliment_note IS NULL OR 
+		  compliment_plain IS NULL OR 
+		  compliment_cool IS NULL OR 
+		  compliment_funny IS NULL OR 
+		  compliment_writer IS NULL OR 
+		  compliment_photos IS NULL 
+	
+
+	
+4. Find the minimum, maximum, and average value for the following fields:
+
+		SELECT AVG(column)
+		FROM table
+
+	i. Table: Review, Column: Stars
+	
+		min: 1		max: 5		avg: 3.7082
+		
+	
+	ii. Table: Business, Column: Stars
+	
+		min: 1 		max: 5		avg: 3.6549
+		
+	
+	iii. Table: Tip, Column: Likes
+	
+		min: 0		max: 2		avg: 0.0144
+		
+	
+	iv. Table: Checkin, Column: Count
+	
+		min: 1		max: 53		avg: 1.9414
+		
+	
+	v. Table: User, Column: Review_count
+	
+		min: 0		max: 2000		avg: 24.2995
+		
+
+
+5. List the cities with the most reviews in descending order:
+
+	SQL code used to arrive at answer:
+	
+		SELECT city,
+			   SUM(review_count) AS reviews
+		FROM business
+		GROUP BY city
+		ORDER BY reviews DESC
+	
+	Copy and Paste the Result Below:
+	
+		+-----------------+---------+
+		| city            | reviews |
+		+-----------------+---------+
+		| Las Vegas       |   82854 |
+		| Phoenix         |   34503 |
+		| Toronto         |   24113 |
+		| Scottsdale      |   20614 |
+		| Charlotte       |   12523 |
+		| Henderson       |   10871 |
+		| Tempe           |   10504 |
+		| Pittsburgh      |    9798 |
+		| Montréal        |    9448 |
+		| Chandler        |    8112 |
+		| Mesa            |    6875 |
+		| Gilbert         |    6380 |
+		| Cleveland       |    5593 |
+		| Madison         |    5265 |
+		| Glendale        |    4406 |
+		| Mississauga     |    3814 |
+		| Edinburgh       |    2792 |
+		| Peoria          |    2624 |
+		| North Las Vegas |    2438 |
+		| Markham         |    2352 |
+		| Champaign       |    2029 |
+		| Stuttgart       |    1849 |
+		| Surprise        |    1520 |
+		| Lakewood        |    1465 |
+		| Goodyear        |    1155 |
+		+-----------------+---------+
+
+	
+6. Find the distribution of star ratings to the business in the following cities:
+
+	i. Avon
+	
+		SQL code used to arrive at answer:
+		
+			SELECT stars,
+				   SUM(review_count) AS count
+			FROM business
+			WHERE city == 'Avon'
+			GROUP BY stars		
+	
+		
+		Copy and Paste the Resulting Table Below (2 columns - star rating and count):
+	
+			+-------+-------+
+			| stars | count |
+			+-------+-------+
+			|   1.5 |    10 |
+			|   2.5 |     6 |
+			|   3.5 |    88 |
+			|   4.0 |    21 |
+			|   4.5 |    31 |
+			|   5.0 |     3 |
+			+-------+-------+	
+	
+	
+	ii. Beachwood
+
+		SQL code used to arrive at answer:
+	
+			SELECT stars,
+				   SUM(review_count) AS count
+			FROM business
+			WHERE city == 'Beachwood'
+			GROUP BY stars
+		
+		Copy and Paste the Resulting Table Below (2 columns - star rating and count):
+		
+			+-------+-------+
+			| stars | count |
+			+-------+-------+
+			|   2.0 |     8 |
+			|   2.5 |     3 |
+			|   3.0 |    11 |
+			|   3.5 |     6 |
+			|   4.0 |    69 |
+			|   4.5 |    17 |
+			|   5.0 |    23 |
+			+-------+-------+
+		
+
+7. Find the top 3 users based on their total number of reviews:
+		
+	SQL code used to arrive at answer:
+	
+		SELECT id,
+			   name,
+			   review_count
+		FROM user
+		ORDER BY review_count DESC
+		LIMIT 3	
+		
+	Copy and Paste the Result Below:
+		
+		+------------------------+--------+--------------+
+		| id                     | name   | review_count |
+		+------------------------+--------+--------------+
+		| -G7Zkl1wIWBBmD0KRy_sCw | Gerald |         2000 |
+		| -3s52C4zL_DHRK0ULG6qtg | Sara   |         1629 |
+		| -8lbUNlXVSoXqaRRiHiSNg | Yuri   |         1339 |
+		+------------------------+--------+--------------+
+
+8. Does posing more reviews correlate with more fans? 
+
+	Please explain your findings and interpretation of the results:
+
+		No, As observed below, fans are not correalted with review count or duration since user is on yelp 
+
+		SELECT id,
+			   name,
+			   review_count,
+			   fans,
+			   yelping_since
+		FROM user
+		ORDER BY review_count DESC	
+
++------------------------+-----------+--------------+------+---------------------+
+| id                     | name      | review_count | fans | yelping_since       |
++------------------------+-----------+--------------+------+---------------------+
+| -G7Zkl1wIWBBmD0KRy_sCw | Gerald    |         2000 |  253 | 2012-12-16 00:00:00 |
+| -3s52C4zL_DHRK0ULG6qtg | Sara      |         1629 |   50 | 2010-05-16 00:00:00 |
+| -8lbUNlXVSoXqaRRiHiSNg | Yuri      |         1339 |   76 | 2008-01-03 00:00:00 |
+| -K2Tcgh2EKX6e6HqqIrBIQ | .Hon      |         1246 |  101 | 2006-07-19 00:00:00 |
+| -FZBTkAZEXoP7CYvRV2ZwQ | William   |         1215 |  126 | 2015-02-19 00:00:00 |
+| --2vR0DIsmQ6WfcSzKWigw | Harald    |         1153 |  311 | 2012-11-27 00:00:00 |
+| -gokwePdbXjfS0iF7NsUGA | eric      |         1116 |   16 | 2007-05-27 00:00:00 |
+| -DFCC64NXgqrxlO8aLU5rg | Roanna    |         1039 |  104 | 2006-03-28 00:00:00 |
+| -8EnCioUmDygAbsYZmTeRQ | Mimi      |          968 |  497 | 2011-03-30 00:00:00 |
+| -0IiMAZI2SsQ7VmyzJjokQ | Christine |          930 |  173 | 2009-07-08 00:00:00 |
+| -fUARDNuXAfrOn4WLSZLgA | Ed        |          904 |   38 | 2009-08-10 00:00:00 |
+| -hKniZN2OdshWLHYuj21jQ | Nicole    |          864 |   43 | 2006-08-02 00:00:00 |
+| -9da1xk7zgnnfO1uTVYGkA | Fran      |          862 |  124 | 2012-04-05 00:00:00 |
+| -B-QEUESGWHPE_889WJaeg | Mark      |          861 |  115 | 2009-05-31 00:00:00 |
+| -kLVfaJytOJY2-QdQoCcNQ | Christina |          842 |   85 | 2012-10-08 00:00:00 |
+| -kO6984fXByyZm3_6z2JYg | Dominic   |          836 |   37 | 2011-02-06 00:00:00 |
+| -lh59ko3dxChBSZ9U7LfUw | Lissa     |          834 |  120 | 2007-08-14 00:00:00 |
+| -g3XIcCb2b-BD0QBCcq2Sw | Lisa      |          813 |  159 | 2009-10-05 00:00:00 |
+| -l9giG8TSDBG1jnUBUXp5w | Alison    |          775 |   61 | 2007-07-02 00:00:00 |
+| -dw8f7FLaUmWR7bfJ_Yf0w | Sui       |          754 |   78 | 2009-09-07 00:00:00 |
+| -AaBjWJYiQxXkCMDlXfPGw | Tim       |          702 |   35 | 2009-01-21 00:00:00 |
+| -jt1ACMiZljnBFvS6RRvnA | L         |          696 |   10 | 2010-04-29 00:00:00 |
+| -IgKkE8JvYNWeGu8ze4P8Q | Angela    |          694 |  101 | 2010-10-01 00:00:00 |
+| -hxUwfo3cMnLTv-CAaP69A | Crissy    |          676 |   25 | 2008-07-31 00:00:00 |
+| -H6cTbVxeIRYR-atxdielQ | Lyn       |          675 |   45 | 2009-11-07 00:00:00 |
++------------------------+-----------+--------------+------+---------------------+
+(Output limit exceeded, 25 of 10000 total rows shown)
+
+	
+9. Are there more reviews with the word "love" or with the word "hate" in them?
+
+	Answer: review with word "love": 1780, review with word "hate" 232
+	
+	SQL code used to arrive at answer:
+	
+		SELECT COUNT(*)									SELECT COUNT(*)
+		FROM review										FROM review
+		WHERE text LIKE "%love%"						WHERE text LIKE "%hate%"
+	
+10. Find the top 10 users with the most fans:
+
+	SQL code used to arrive at answer:
+	
+		SELECT id,
+			   name,
+			   fans
+		FROM user
+		ORDER BY fans DESC
+		LIMIT 10
+	
+	
+	Copy and Paste the Result Below:
+
+		+------------------------+-----------+------+
+		| id                     | name      | fans |
+		+------------------------+-----------+------+
+		| -9I98YbNQnLdAmcYfb324Q | Amy       |  503 |
+		| -8EnCioUmDygAbsYZmTeRQ | Mimi      |  497 |
+		| --2vR0DIsmQ6WfcSzKWigw | Harald    |  311 |
+		| -G7Zkl1wIWBBmD0KRy_sCw | Gerald    |  253 |
+		| -0IiMAZI2SsQ7VmyzJjokQ | Christine |  173 |
+		| -g3XIcCb2b-BD0QBCcq2Sw | Lisa      |  159 |
+		| -9bbDysuiWeo2VShFJJtcw | Cat       |  133 |
+		| -FZBTkAZEXoP7CYvRV2ZwQ | William   |  126 |
+		| -9da1xk7zgnnfO1uTVYGkA | Fran      |  124 |
+		| -lh59ko3dxChBSZ9U7LfUw | Lissa     |  120 |
+		+------------------------+-----------+------+
+	
+	
+11. Is there a strong correlation between having a high number of fans and being listed 
+	as "useful" or "funny?" 
+
+	Answer: Yes
+
+	SQL code used to arrive at answer:
+	
+		SELECT name,
+			   fans,
+			   useful,
+			   funny,
+			   review_count
+		FROM user
+		ORDER BY fans DESC	
+	
+	Copy and Paste the Result Below:
+
++-----------+------+--------+--------+--------------+
+| name      | fans | useful |  funny | review_count |
++-----------+------+--------+--------+--------------+
+| Amy       |  503 |   3226 |   2554 |          609 |
+| Mimi      |  497 |    257 |    138 |          968 |
+| Harald    |  311 | 122921 | 122419 |         1153 |
+| Gerald    |  253 |  17524 |   2324 |         2000 |
+| Christine |  173 |   4834 |   6646 |          930 |
+| Lisa      |  159 |     48 |     13 |          813 |
+| Cat       |  133 |   1062 |    672 |          377 |
+| William   |  126 |   9363 |   9361 |         1215 |
+| Fran      |  124 |   9851 |   7606 |          862 |
+| Lissa     |  120 |    455 |    150 |          834 |
+| Mark      |  115 |   4008 |    570 |          861 |
+| Tiffany   |  111 |   1366 |    984 |          408 |
+| bernice   |  105 |    120 |    112 |          255 |
+| Roanna    |  104 |   2995 |   1188 |         1039 |
+| Angela    |  101 |    158 |    164 |          694 |
+| .Hon      |  101 |   7850 |   5851 |         1246 |
+| Ben       |   96 |   1180 |   1155 |          307 |
+| Linda     |   89 |   3177 |   2736 |          584 |
+| Christina |   85 |    158 |     34 |          842 |
+| Jessica   |   84 |   2161 |   2091 |          220 |
+| Greg      |   81 |    820 |    753 |          408 |
+| Nieves    |   80 |   1091 |    774 |          178 |
+| Sui       |   78 |      9 |     18 |          754 |
+| Yuri      |   76 |   1166 |    220 |         1339 |
+| Nicole    |   73 |     13 |     10 |          161 |
++-----------+------+--------+--------+--------------+
+(Output limit exceeded, 25 of 10000 total rows shown)	
+	
+	Please explain your findings and interpretation of the results:
+		
+		Yes, apart from outliers like Herald, Lisa, Sui --> there seems a correlation
+		between number of fans and being marked useful | funny
+	
+
+Part 2: Inferences and Analysis
+
+1. 	Pick one city and category of your choice and group the businesses in that city
+	or category by their overall star rating. Compare the businesses with 2-3 stars to 
+	the businesses with 4-5 stars and answer the following questions. Include your code.
+	
+	As Toronto attracts tourists across globe, I chose category Restaurant for comparision of stars.
+	I added day_of_week parameter and converted it to category [monday = 1, tuesday =2 ...] to see if
+	effect of weekends is present. BUt, It is not observed. 
+
+	i.	Do the two groups you chose to analyze have a different distribution of hours?
+	
+			In general, The 2-3 star group had longer hours than 4-5 star group.
+			
+			| name          | review_count | hours                 | postal_code | day_of_week | star_rating |
+
+			| 99 Cent Sushi |            5 | Monday|11:00-23:00    | M5B 2E5     |           1 | 2-3 stars   |
+			| Pizzaiolo     |           34 | Monday|9:00-23:00     | M5H 1X6     |           1 | 2-3 stars   |
+			| Edulis        |           89 | Wednesday|18:00-23:00 | M5V         |           3 | 4-5 stars   |
+			| Sushi Osaka   |            8 | Monday|11:00-23:00    | M9A 1C2     |           1 | 4-5 stars   |
+	
+	ii.	Do the two groups you chose to analyze have a different number of reviews?
+	
+		Sushi Osaka is 4-5 star group but has only 8 reviews. Whereas Edulis had amassed 89 reviews. No definite
+		correaltion is noticed.  
+	
+	iii.	Are you able to infer anything from the location data provided between these two
+		groups? Explain.
+
+		NO, only 4 restaurants are located on yelp and all are in different zip codes. Ignoring small sample size; 
+		Naively, one can say that restaurant in M5 have higher chance of getting more reviews. 
+
+	SQL code used for analysis:
+	
+	SELECT B.name,
+		B.review_count,
+		H.hours,
+		postal_code,
+		CASE
+			WHEN hours LIKE "monday%" THEN 1
+			WHEN hours LIKE "tuesday%" THEN 2
+			WHEN hours LIKE "wednesday%" THEN 3
+			WHEN hours LIKE "thursday%" THEN 4
+			WHEN hours LIKE "friday%" THEN 5
+			WHEN hours LIKE "saturday%" THEN 6
+			WHEN hours LIKE "sunday%" THEN 7
+		END AS day_of_week,			   
+		CASE
+			WHEN B.stars BETWEEN 2 AND 3 THEN '2-3 stars'
+			WHEN B.stars BETWEEN 4 AND 5 THEN '4-5 stars'
+		END AS star_rating
+	FROM business B INNER JOIN hours H
+	ON B.id = H.business_id
+	INNER JOIN category C
+	ON C.business_id = B.id
+	WHERE (B.city == 'Toronto'
+	AND
+	C.category LIKE 'Restaurants')
+	AND
+	(B.stars BETWEEN 2 AND 3
+	OR
+	B.stars BETWEEN 4 AND 5)
+	GROUP BY stars, day_of_week
+	ORDER BY day_of_week, star_rating ASC
+
+		
+		
+2.	Group business based on the ones that are open and the ones that are closed. What
+	differences can you find between the ones that are still open and the ones that are
+	closed? List at least two differences and the SQL code you used to arrive at your
+	answer.
+		
+	i. 	Difference 1:
+	
+		Open businesses have more reviews than closed businesses - on average.
+		
+			Open:   AVG(review_count) = 31.757
+			Closed: AVG(review_count) = 23.198
+	
+	
+	ii.	Difference 2:
+	
+		Open businesses have more stars than closed businesses - on average.
+	
+			Open:   AVG(stars) = 3.679
+			Closed: AVG(stars) = 3.520
+	
+	SQL code used for analysis:
+	
+		SELECT COUNT(DISTINCT(id)),
+				SUM(review_count)
+			   AVG(review_count),,
+			   AVG(stars),
+			   is_open
+		FROM business
+		GROUP BY is_open
+	
+	
+3. 	For this last part of your analysis, you are going to choose the type of analysis you
+	want to conduct on the Yelp dataset and are going to prepare the data for analysis.
+	
+	Ideas for analysis include: Parsing out keywords and business attributes for sentiment 
+	analysis, clustering businesses to find commonalities or anomalies between them, 
+	predicting the overall star rating for a business, predicting the number of fans a 
+	user will have, and so on. These are just a few examples to get you started, so feel 
+	free to be creative and come up with your own problem you want to solve. Provide
+	answers, in-line, to all of the following:
+	
+	i. 	Indicate the type of analysis you chose to do:
+	
+		Predicting whether a business will flourish or not.   
+	
+	ii.	Write 1-2 brief paragraphs on the type of data you will need for your analysis
+		and why you chose that data:
+		
+		Business would flourish if it has more good reviews, star rating of business, location.
+		Attributes are used to denote environment at businesses.
+		
+	iii.	Output of your finished dataset:
++------------------------+--------------------------------------+--------------+-------+-------------+-----------------------------+--------------+-------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| id                     | name                                 | city         | state | postal_code | address                     | review_count | stars | attributes                                                                                                                                                                                                                                                                                                                          |
++------------------------+--------------------------------------+--------------+-------+-------------+-----------------------------+--------------+-------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| -0DET7VdEQOJVJ_v6klEug | Flaming Kitchen                      | Markham      | ON    | L3R 3P9     | 3235 York Regional Road 7   |           25 |   3.0 | RestaurantsTableService,GoodForMeal,Alcohol,Caters,HasTV,RestaurantsGoodForGroups,NoiseLevel,WiFi,RestaurantsAttire,RestaurantsReservations,OutdoorSeating,RestaurantsPriceRange2,BikeParking,RestaurantsDelivery,Ambience,RestaurantsTakeOut,GoodForKids,BusinessParking                                                           |
+| -2HjuT4yjLZ3b5f_abD87Q | Freeman's Car Stereo                 | Charlotte    | NC    | 28217       | 4821 South Blvd             |            8 |   3.5 | BusinessAcceptsCreditCards,RestaurantsPriceRange2,BusinessParking,WheelchairAccessible                                                                                                                                                                                                                                              |
+| -2bYV9zVtn2F5XpiAaHt5A | Deli 194                             | Edinburgh    | EDH   | EH15 1EX    | 194 Portobello High Street  |            4 |   3.0 | GoodForMeal,Alcohol,HasTV,RestaurantsGoodForGroups,NoiseLevel,RestaurantsAttire,RestaurantsReservations,OutdoorSeating,RestaurantsPriceRange2,RestaurantsTableService,Ambience,RestaurantsTakeOut,GoodForKids,BusinessParking                                                                                                       |
+| -2q4dnUw0gGJniGW2aPamQ | Fiesta Ranchera                      | Champaign    | IL    | 61820       | 1805 S Neil St              |            4 |   2.0 | GoodForMeal,RestaurantsGoodForGroups,NoiseLevel                                                                                                                                                                                                                                                                                     |
+| -CdstAUdEvci8GeJG8owpQ | Motors & More                        | Las Vegas    | NV    | 89102       | 2315 Highland Dr            |            7 |   5.0 | BusinessAcceptsCreditCards,BusinessAcceptsBitcoin,ByAppointmentOnly                                                                                                                                                                                                                                                                 |
+| -K4gAv8_vjx8-2BxkVeRkA | Baby Cakes                           | Willoughby   | OH    | 44094       | 4145 Erie St                |            5 |   3.5 | BusinessAcceptsCreditCards,RestaurantsTakeOut,WheelchairAccessible,RestaurantsDelivery                                                                                                                                                                                                                                              |
+| -PtTGvWsckUL8tTutHr6Ew | Snip-its Rocky River                 | Rocky River  | OH    | 44116       | 21609 Center Ridge Rd       |           18 |   2.5 | BusinessAcceptsCreditCards,RestaurantsPriceRange2,GoodForKids,BusinessParking,ByAppointmentOnly                                                                                                                                                                                                                                     |
+| -ayZoW_iNDsunYXX_0x1YQ | Standard Restaurant Supply           | Phoenix      | AZ    | 85008       | 2922 E McDowell Rd          |           15 |   3.5 | BusinessAcceptsCreditCards,RestaurantsPriceRange2,BusinessParking,BikeParking,WheelchairAccessible                                                                                                                                                                                                                                  |
+| -cLMYLmmXwomTMMuDHA1Yg | Frankie Fettuccine Food Truck        | Oakville     | ON    | L6J 6T4     | 1530 Prince John Circle     |            7 |   5.0 | BusinessAcceptsCreditCards,GoodForMeal,RestaurantsPriceRange2                                                                                                                                                                                                                                                                       |
+| -d9qyfNhLMQwVVg_raBKeg | What A Bagel                         | York         | ON    | M6C 2C4     | 973 Eglinton Avenue W       |            8 |   3.0 | NoiseLevel,RestaurantsAttire,RestaurantsTableService,OutdoorSeating                                                                                                                                                                                                                                                                 |
+| -g81bxMqgpfJQHUSDDljjg | WorldMark Las Vegas - Spencer Street | Las Vegas    | NV    | 89119       | 4225 Spencer St             |           19 |   3.5 | BusinessAcceptsCreditCards,RestaurantsPriceRange2,WiFi                                                                                                                                                                                                                                                                              |
+| -hjbcaxaU9yYXY2iI-49sw | Pinnacle Fencing Solutions           | Phoenix      | AZ    | 85060       |                             |           13 |   4.0 | BusinessAcceptsCreditCards,ByAppointmentOnly                                                                                                                                                                                                                                                                                        |
+| -iu4FxdfxN4rU4Fu9BjiFw | Alterations Express                  | Strongsville | OH    | 44136       | 17240 Royalton Rd           |            3 |   4.0 | BusinessParking,BusinessAcceptsCreditCards,RestaurantsPriceRange2,BusinessAcceptsBitcoin,BikeParking,ByAppointmentOnly,WheelchairAccessible                                                                                                                                                                                         |
+| -j4NsiRzSMrMk2N_bGH_SA | Extra Space Storage                  | Chandler     | AZ    | 85224       | 2880 W Elliot Rd            |            5 |   4.0 | BusinessAcceptsCreditCards                                                                                                                                                                                                                                                                                                          |
+| -uiBBVWI6tMDm2JFbZFrOw | Gussied Up                           | Toronto      | ON    | M5R 1W5     | 1090 Bathurst St            |            6 |   4.5 | BusinessAcceptsCreditCards,RestaurantsPriceRange2,BusinessParking,BikeParking                                                                                                                                                                                                                                                       |
+| -xEGQKqXZzvkdyVQilQtrg | Royal Dumpling                       | Toronto      | ON    | M2N 7A1     | 5 Northtown Way, Unit 7     |            4 |   1.5 | NoiseLevel,OutdoorSeating,RestaurantsPriceRange2,BikeParking,RestaurantsDelivery,RestaurantsTakeOut,RestaurantsGoodForGroups                                                                                                                                                                                                        |
+| 0-TtzWmjREl7lIKDcmGONQ | Mango Flats                          | Tempe        | AZ    | 85283       | 5500 S Mill Ave             |            5 |   2.5 | RestaurantsTableService,GoodForMeal,Alcohol,Caters,HasTV,RestaurantsGoodForGroups,NoiseLevel,WiFi,RestaurantsAttire,RestaurantsReservations,OutdoorSeating,BusinessAcceptsCreditCards,RestaurantsPriceRange2,BikeParking,RestaurantsDelivery,Ambience,RestaurantsTakeOut,GoodForKids,BusinessParking                                |
+| 0-aPEeNc2zVb5Gp-i7Ckqg | Buddy's Muffler & Exhaust            | Gastonia     | NC    | 28056       | 1509 Hickory Grove Rd       |            4 |   5.0 | BusinessAcceptsCreditCards                                                                                                                                                                                                                                                                                                          |
+| 01xXe2m_z048W5gcBFpoJA | Five Guys                            | Phoenix      | AZ    | 85008       | 2641 N 44th St, Ste 100     |           63 |   3.5 | RestaurantsTableService,GoodForMeal,Alcohol,Caters,HasTV,RestaurantsGoodForGroups,NoiseLevel,WiFi,RestaurantsAttire,RestaurantsReservations,OutdoorSeating,BusinessAcceptsCreditCards,RestaurantsPriceRange2,BikeParking,RestaurantsDelivery,Ambience,RestaurantsTakeOut,GoodForKids,DriveThru,BusinessParking                      |
+| 06I2r8S3tHP_LwGnnkk6Uw | All Storage - Anthem                 | Henderson    | NV    | 89052       | 2620 W Horizon Ridge Pkwy   |            3 |   3.5 | BusinessAcceptsCreditCards,BusinessAcceptsBitcoin                                                                                                                                                                                                                                                                                   |
+| 07h3mGtTovPJE660nX6E-A | Mood                                 | Edinburgh    | EDH   | EH1 3AA     | 1 Greenside Place           |           11 |   2.0 | Alcohol,OutdoorSeating,BusinessAcceptsCreditCards,RestaurantsPriceRange2,AgesAllowed,Music,Smoking,RestaurantsGoodForGroups,WheelchairAccessible                                                                                                                                                                                    |
+| 0AJF-USLN6K5T4caooDdjw | Starbucks                            | Phoenix      | AZ    | 85048       | 4605 E Chandler Blvd, Ste A |           52 |   3.0 | BusinessParking,Caters,WiFi,OutdoorSeating,BusinessAcceptsCreditCards,RestaurantsPriceRange2,BikeParking,RestaurantsTakeOut                                                                                                                                                                                                         |
+| 0B3W6KxkD3o4W4l6cq735w | Big Smoke Burger                     | Toronto      | ON    | M4B 2L9     | 260 Yonge Street            |           47 |   3.0 | RestaurantsTableService,GoodForMeal,Alcohol,Caters,HasTV,RestaurantsGoodForGroups,NoiseLevel,WiFi,RestaurantsAttire,RestaurantsReservations,OutdoorSeating,BusinessAcceptsCreditCards,RestaurantsPriceRange2,WheelchairAccessible,BikeParking,RestaurantsDelivery,Ambience,RestaurantsTakeOut,GoodForKids,DriveThru,BusinessParking |
+| 0IySwcfqwJjpHPsYwjpAkg | Subway                               | Charlotte    | NC    | 28208       | 2904 Yorkmont Rd            |            7 |   3.5 | Ambience,RestaurantsPriceRange2,GoodForKids                                                                                                                                                                                                                                                                                         |
+| 0K2rKvqdBmiOAUTebcUohQ | Red Rock Canyon Visitor Center       | Las Vegas    | NV    | 89161       | 1000 Scenic Loop Dr         |           32 |   4.5 | BusinessAcceptsCreditCards,GoodForKids                                                                                                                                                                                                                                                                                              |
++------------------------+--------------------------------------+--------------+-------+-------------+-----------------------------+--------------+-------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+(Output limit exceeded, 25 of 87 total rows shown)	
+	iv. 	Provide the SQL code you used to create your final dataset:
+	
+		SELECT B.id,
+			   B.name,
+			   B.city,
+			   B.state,
+			   B.postal_code,
+			   B.address,
+			   B.review_count,
+			   B.stars,
+			   GROUP_CONCAT(DISTINCT(A.name)) AS attributes
+		FROM business B
+		INNER JOIN attribute A
+		ON B.id = A.business_id
+		GROUP BY B.id
+
